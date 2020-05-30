@@ -4,10 +4,10 @@ using System.Text;
 
 namespace YahooFinance
 {
-    class StockQuote
+    public class StockQuote
     {
-        public decimal open { get; set; }
-        public decimal high { get; set; }
+        public decimal Open { get; set; }
+        public decimal High { get; set; }
         public decimal low { get; set; }
         public decimal price { get; set; }
         public decimal volume { get; set;}
@@ -17,5 +17,7 @@ namespace YahooFinance
         public decimal change { get; set; }
 
         public string changePercent { get; set; }
+
+        
     }
 }

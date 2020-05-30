@@ -4,7 +4,7 @@ using System.Text;
 
 namespace YahooFinance
 {
-    class AlphaVantageData
+    public class AlphaVantageData
     {
         public DateTime Timestamp { get; set; }
         public decimal Open { get; set; }
