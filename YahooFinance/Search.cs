@@ -31,4 +31,17 @@ namespace YahooFinance
         public int TotalRecords { get; set; } = 0;
         public int TotalPages { get; set; } = 0;
     }
+
+    public class CompanySearch
+    {
+        public string Ticker { get; set; } = "";
+        public List<CompanyName> Results { get; set; } = new List<CompanyName>();
+
+        public int PageNr { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
+
+
+        public int TotalRecords { get; set; } = 0;
+        public int TotalPages { get; set; } = 0;
+    }
 }

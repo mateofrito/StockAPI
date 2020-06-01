@@ -26,26 +26,35 @@ namespace YahooFinance
             var apiKey = "EXGBU46FGX9CDJ24"; 
             
             var monthlyPrices = $"https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol={symbol}&apikey={apiKey}&datatype=csv".GetStringFromUrl().FromCsv<List<AlphaVantageData>>();
-            var dailyPrices = $"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={apiKey}&datatype=csv".GetStringFromUrl().FromCsv<List<StockQuote>>(); 
-            
+            var dailyPrices = $"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={apiKey}&datatype=csv".GetStringFromUrl().FromCsv<List<StockQuote>>();
+            var companyName = $"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={symbol}&apikey={apiKey}&datatype=csv".GetStringFromUrl().FromCsv<List<CompanyName>>();
+
             var ticker = symbol;
             var search = new Search { Ticker = ticker };
             var daySearch = new DailySearch { Ticker = ticker };
+            var companySearch = new CompanySearch { Ticker = ticker };
             int totalRecords = monthlyPrices.Count;
 
             var stockOutput = search.Results = monthlyPrices.OrderByDescending(x => x.Timestamp).Take(monthInt).ToList();
             
             
             var changePercent = daySearch.Results = dailyPrices.Take(1).ToList();
+            var companyNameResponse = companySearch.Results = companyName.Take(1).ToList();
+            var company = "";
+            foreach (var c in companySearch.Results)
+            {
+                company = c.name;
+            }
+
             //monthlyPrices.PrintDump();
             //stockOutput.PrintDump();
 
-            Console.WriteLine("Trailing Monthly Closing Prices for " + symbol);
+            Console.WriteLine("Trailing Monthly Closing Prices for " + company);
             Console.WriteLine("-------------------");
 
             foreach (var m in search.Results)
             {
-                Console.WriteLine("Timestamp:  " + m.Timestamp);
+                Console.WriteLine("Date:  " + m.Timestamp);
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Close:  " + m.Close);
                 Console.ResetColor();
@@ -54,13 +63,21 @@ namespace YahooFinance
 
             foreach (var x in daySearch.Results)
             {
-                Console.WriteLine("Change Perfecntage" + x.changePercent);
+                if (x.changePercent.StartsWith("-"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                Console.WriteLine("Percentage Change:  " + x.changePercent);
             }
-                    
-			//Console.WriteLine("The current price for " + symbol + " is: " + price);
-			//var maxPrice = monthlyPrices.Max(u => u.Close);
-			//var minPrice = monthlyPrices.Min(u => u.Close);
-			//Console.WriteLine("These quotes were for:  " + symbol);
-		}
+            Console.ResetColor();
+            //Console.WriteLine("The current price for " + symbol + " is: " + price);
+            //var maxPrice = monthlyPrices.Max(u => u.Close);
+            //var minPrice = monthlyPrices.Min(u => u.Close);
+            //Console.WriteLine("These quotes were for:  " + symbol);
+        }
     }
 }
