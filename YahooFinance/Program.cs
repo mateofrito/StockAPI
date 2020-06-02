@@ -7,8 +7,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
 using System.IO;
+using MoneyMachine.Services;
 
-namespace YahooFinance
+
+namespace MoneyMachine
 {
     class Program
     {
@@ -23,23 +25,23 @@ namespace YahooFinance
             // retrieve monthly prices for Microsoft
             var stockQuote = new StockQuote();
             //var symbol = "DKNG";
-            var apiKey = "EXGBU46FGX9CDJ24"; 
-            
-            var monthlyPrices = $"https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol={symbol}&apikey={apiKey}&datatype=csv".GetStringFromUrl().FromCsv<List<AlphaVantageData>>();
-            var dailyPrices = $"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={apiKey}&datatype=csv".GetStringFromUrl().FromCsv<List<StockQuote>>();
-            var companyName = $"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={symbol}&apikey={apiKey}&datatype=csv".GetStringFromUrl().FromCsv<List<CompanyName>>();
+            var apiKey = "EXGBU46FGX9CDJ24";
+
+            var apiCall = new ApiCalls();
+           // apiCall.MonthlyPrices(apiKey, symbol);
+ 
 
             var ticker = symbol;
             var search = new Search { Ticker = ticker };
             var daySearch = new DailySearch { Ticker = ticker };
             var companySearch = new CompanySearch { Ticker = ticker };
-            int totalRecords = monthlyPrices.Count;
+            int totalRecords = apiCall.MonthlyPrices(apiKey, symbol).Count;
 
-            var stockOutput = search.Results = monthlyPrices.OrderByDescending(x => x.Timestamp).Take(monthInt).ToList();
+            var stockOutput = search.Results = apiCall.MonthlyPrices(apiKey, symbol).OrderByDescending(x => x.Timestamp).Take(monthInt).ToList();
             
             
-            var changePercent = daySearch.Results = dailyPrices.Take(1).ToList();
-            var companyNameResponse = companySearch.Results = companyName.Take(1).ToList();
+            var changePercent = daySearch.Results = apiCall.DailyPrices(apiKey, symbol).Take(1).ToList();
+            var companyNameResponse = companySearch.Results = apiCall.CompanyName(apiKey, symbol).Take(1).ToList();
             var company = "";
             foreach (var c in companySearch.Results)
             {

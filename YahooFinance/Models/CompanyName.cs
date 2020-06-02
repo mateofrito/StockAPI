@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace YahooFinance
+namespace MoneyMachine
 {
     public class CompanyName
     {
